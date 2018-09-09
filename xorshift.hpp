@@ -11,15 +11,15 @@ class xorshift32
     uint32_t m_seed;
 
   public:
-    xorshift32(uint32_t _Seed = 1) : m_seed(_Seed);
-    void seed(uint32_t _Seed) { m_seed = seed; }
+    xorshift32(uint32_t _Seed = 1) : m_seed(_Seed) {}
+    void seed(uint32_t _Seed) { m_seed = _Seed; }
     void discard(uint64_t z);
     uint32_t operator()(void);
 };
 
 void xorshift32::discard(uint64_t z)
 {
-    while(z--)
+    while (z--)
         this->operator()();
 }
 
@@ -37,8 +37,8 @@ class xorshift64
     uint64_t m_seed;
 
   public:
-    xorshift64(uint64_t _Seed=1) : m_seed(_Seed);
-    void seed(uint64_t seed){m_seed = seed;}
+    xorshift64(uint64_t _Seed = 1) : m_seed(_Seed) {}
+    void seed(uint64_t seed) { m_seed = seed; }
     void discard(uint64_t z);
     uint64_t operator()(void);
 };
@@ -63,25 +63,36 @@ class xorshift96
     uint32_t m_seed0;
     uint32_t m_seed1;
     uint32_t m_seed2;
+
   public:
-    xorshift96(uint32_t seed1=1, uint32_t seed2=2,uint32_t seed3=3):m_seed0(seed1),m_seed1(seed2),m_seed2(seed3){}
-    void seed(uint32_t seed1, uint32_t seed2, uint32_t seed3){m_seed0=seed1;m_seed1=seed2;m_seed2=seed3;}
+    xorshift96(uint32_t seed1 = 1, uint32_t seed2 = 2, uint32_t seed3 = 3) : m_seed0(seed1), m_seed1(seed2), m_seed2(seed3) {}
+    void seed(uint32_t seed1, uint32_t seed2, uint32_t seed3)
+    {
+        m_seed0 = seed1;
+        m_seed1 = seed2;
+        m_seed2 = seed3;
+    }
     void discard(uint64_t z);
     uint32_t operator()(void);
-}
+};
 
 void xorshift96::discard(uint64_t z)
 {
-    while(z--)
+    while (z--)
         this->operator()();
 }
 
 uint32_t xorshift96::operator()(void)
 {
     uint32_t t;
-    t = (m_seed0 ^ (m_seed0 << 3)) ^ (m_seed1 ^ (m_seed1 >> 19)) ^ (m_seed2 ^ (m_seed2 << 6));
+    m_seed0 ^= (m_seed0 << 3);
+    t = m_seed0;
     m_seed0 = m_seed1;
+    m_seed1 ^= (m_seed1 >> 19);
+    t ^= m_seed1;
     m_seed1 = m_seed2;
+    m_seed2 ^= (m_seed2 << 6);
+    t ^= m_seed2;
     m_seed2 = t;
     return t;
 }
@@ -95,15 +106,21 @@ class xorshift128
     uint32_t m_seed3;
 
   public:
-    xorshift128(uint32_t seed1=1, uint32_t seed2=2, uint32_t seed3=3, uint64_t seed4=4) : m_seed0(seed1), m_seed1(seed2), m_seed2(seed3),m_seed3(seed4) {}
-    void seed(uint32_t seed1, uint32_t seed2, uint32_t seed3,uint32_t seed4) { m_seed0 = seed1; m_seed1 = seed2; m_seed2 = seed3;m_seed3=seed4; }
+    xorshift128(uint32_t seed1 = 1, uint32_t seed2 = 2, uint32_t seed3 = 3, uint64_t seed4 = 4) : m_seed0(seed1), m_seed1(seed2), m_seed2(seed3), m_seed3(seed4) {}
+    void seed(uint32_t seed1, uint32_t seed2, uint32_t seed3, uint32_t seed4)
+    {
+        m_seed0 = seed1;
+        m_seed1 = seed2;
+        m_seed2 = seed3;
+        m_seed3 = seed4;
+    }
     void discard(uint64_t z);
     uint32_t operator()(void);
-}
+};
 
 void xorshift128::discard(uint64_t z)
 {
-    while(z--)
+    while (z--)
         this->operator()();
 }
 
@@ -114,7 +131,7 @@ uint32_t xorshift128::operator()(void)
     m_seed0 = m_seed1;
     m_seed1 = m_seed2;
     m_seed2 = m_seed3;
-    m_seed3 = (m_seed3 ^ (m_seed3 >> 19)) ^ (t ^ (t >> 8))
+    m_seed3 = (m_seed3 ^ (m_seed3 >> 19)) ^ (t ^ (t >> 8));
     return m_seed3;
 }
 
@@ -126,8 +143,12 @@ class xorshift128Plus
     uint64_t m_seed1;
 
   public:
-    xorshift128Plus(uint64_t seed1, uint64_t seed2) : m_seed0(seed1), m_seed1(seed2);
-    void seed(uint64_t seed1,uint64_t seed2){m_seed0=seed1;m_seed1=seed2;}
+    xorshift128Plus(uint64_t seed1, uint64_t seed2) : m_seed0(seed1), m_seed1(seed2){};
+    void seed(uint64_t seed1, uint64_t seed2)
+    {
+        m_seed0 = seed1;
+        m_seed1 = seed2;
+    }
     void discard(uint64_t z);
     uint64_t operator()(void);
 };
