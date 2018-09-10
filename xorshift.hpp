@@ -127,11 +127,14 @@ void xorshift128::discard(uint64_t z)
 uint32_t xorshift128::operator()(void)
 {
     uint32_t t;
-    t = m_seed0 ^ (m_seed0 << 11);
+    m_seed0 ^= (m_seed0 << 11);
+    t = m_seed0;
     m_seed0 = m_seed1;
     m_seed1 = m_seed2;
     m_seed2 = m_seed3;
-    m_seed3 = (m_seed3 ^ (m_seed3 >> 19)) ^ (t ^ (t >> 8));
+    t ^= (t >> 8);
+    m_seed3 ^= (m_seed3 >> 19);
+    m_seed3 ^= t;
     return m_seed3;
 }
 
