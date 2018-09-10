@@ -146,7 +146,7 @@ class xorshift128Plus
     uint64_t m_seed1;
 
   public:
-    xorshift128Plus(uint64_t seed1, uint64_t seed2) : m_seed0(seed1), m_seed1(seed2){};
+    xorshift128Plus(uint64_t seed1 = 1, uint64_t seed2 = 2) : m_seed0(seed1), m_seed1(seed2){};
     void seed(uint64_t seed1, uint64_t seed2)
     {
         m_seed0 = seed1;
@@ -164,14 +164,13 @@ void xorshift128Plus::discard(uint64_t z)
 
 uint64_t xorshift128Plus::operator()(void)
 {
-    uint64_t s1 = m_seed0;
-    uint64_t s0 = m_seed1;
-    m_seed0 = s0;
-    s1 ^= s1 << 23;
-    s1 ^= s1 >> 17;
-    s1 ^= s0;
-    s1 ^= s0 >> 26;
-    m_seed1 = s1;
+    uint64_t t = m_seed0;
+    m_seed0 = m_seed1;
+    t ^= t << 23;
+    t ^= t >> 17;
+    t ^= m_seed1;
+    t ^= m_seed1 >> 26;
+    m_seed1 = t;
     return m_seed0 + m_seed1;
 }
 
